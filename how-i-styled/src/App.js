@@ -8,12 +8,22 @@ import Account from "./post login components/account";
 import Explore from "./post login components/explore";
 import PostLoginHeader from "./post login components/post-login-header";
 import Signup from "./pre login components/signup";
+import {useEffect, useState} from "react";
+import {supabase} from "./supabaseClient";
 
 function App() {
+    const [session, setSession] = useState(null);
+
+    useEffect(() => {
+        supabase.auth.getSession().then(({data: {session}}) => {
+            setSession(session);
+        });
+    }, []);
+
     return (
         <>
             <Router>
-                {Login.session ? <PostLoginHeader/> : <PreLoginHeader />}
+                {session ? <PostLoginHeader/> : <PreLoginHeader />}
                 <Routes>
                     <Route exact path="/" exact element={<Home/>}/>
                     <Route path="/login" element={<Login/>}/>
