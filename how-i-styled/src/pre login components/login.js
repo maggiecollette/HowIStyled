@@ -26,7 +26,7 @@ function Login() {
                 email,
                 password,
             });
-            navigate("/account");
+            window.location.reload();
         }
         catch (error) {
             console.error(error.message);

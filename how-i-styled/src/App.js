@@ -16,9 +16,13 @@ function App() {
 
     useEffect(() => {
         supabase.auth.getSession().then(({data: {session}}) => {
-            setSession(session);
-        });
-    }, []);
+            setSession(session)
+        })
+
+        supabase.auth.onAuthStateChange((_event, session) => {
+            setSession(session)
+        })
+    }, [session]);
 
     return (
         <>
@@ -27,7 +31,7 @@ function App() {
                 <Routes>
                     <Route exact path="/" exact element={<Home/>}/>
                     <Route path="/login" element={<Login/>}/>
-                    <Route path="/account" element={<Account/>}/>
+                    <Route path="/account" element={session ? <Account key={session.user.id} session={session}/> : <Account session={null}/>}/>
                     <Route path="/explore" element={<Explore/>}/>
                     <Route path="/sign-up" element={<Signup/>}/>
                 </Routes>
