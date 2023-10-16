@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from "react";
-import {supabase} from "../supabaseClient";
+import {supabase} from "../../supabaseClient";
 
-export default function Account({session}) {
-    const [loading, setLoading] = useState(false);
+export default function EditProfile({session}) {
     const [name, setName] = useState("");
     const [username, setUsername] = useState("");
     const [picture, setPicture] = useState("");
@@ -13,7 +12,6 @@ export default function Account({session}) {
 
     async function GetProfile() {
         try {
-            setLoading(true)
             const {user} = session;
             const {data, error} = await supabase
                 .from("profiles")
@@ -28,7 +26,6 @@ export default function Account({session}) {
         } catch (error) {
             console.warn(error);
         }
-        setLoading(false)
     }
 
     async function OpenEditProfile() {
@@ -38,8 +35,6 @@ export default function Account({session}) {
     async function EditProfile(event) {
         try {
             event.preventDefault()
-            console.log('hello')
-            setLoading(true)
             const {user} = session;
             const updates = {
                 id : user.id,
@@ -47,31 +42,25 @@ export default function Account({session}) {
                 full_name: name,
                 avatar_url: picture,
             }
-            console.log("updates:", updates)
             let { error } = await supabase.from('profiles').upsert(updates)
             return;
         } catch (error) {
             console.warn(error);
         }
-        setLoading(false)
     }
 
-    if (session) {
         return (
             <div>
                 <h3>profile</h3>
                 <p>Name: {name}</p>
                 <p>Username: {username}</p>
                 <p>Picture: {picture}</p>
-                    <form onSubmit={(e) => EditProfile(e)}>
-                        <input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)}/>
-                        <input id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)}/>
-                        <input id="profile picture" type="text" value={picture} onChange={(e) => setPicture(e.target.value)}/>
-                        <button type='submit'>update</button>
-                    </form>
+                <form onSubmit={(e) => EditProfile(e)}>
+                    <input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)}/>
+                    <input id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)}/>
+                    <input id="profile picture" type="text" value={picture} onChange={(e) => setPicture(e.target.value)}/>
+                    <button type='submit'>update</button>
+                </form>
             </div>
         );
-    } else {
-        return <h3>you cannot access this page until you sign in</h3>
-    }
 }

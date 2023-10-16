@@ -4,7 +4,7 @@ import PreLoginHeader from "./pre login components/pre-login-header";
 import Footer from "./footer";
 import Home from "./pages/home";
 import Login from "./pre login components/login";
-import Account from "./post login components/account";
+import Account from "./pages/account-page/account";
 import Explore from "./post login components/explore";
 import PostLoginHeader from "./post login components/post-login-header";
 import Signup from "./pre login components/signup";
