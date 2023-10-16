@@ -28,10 +28,6 @@ export default function EditProfile({session}) {
         }
     }
 
-    async function OpenEditProfile() {
-
-    }
-
     async function EditProfile(event) {
         try {
             event.preventDefault()
