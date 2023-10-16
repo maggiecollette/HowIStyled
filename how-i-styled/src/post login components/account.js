@@ -2,9 +2,10 @@ import React, {useEffect, useState} from "react";
 import {supabase} from "../supabaseClient";
 
 export default function Account({session}) {
-    const [name, setName] = useState(null);
-    const [username, setUsername] = useState(null);
-    const [picture, setPicture] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [name, setName] = useState("");
+    const [username, setUsername] = useState("");
+    const [picture, setPicture] = useState("");
 
     useEffect ( () => {
         GetProfile()
@@ -12,6 +13,7 @@ export default function Account({session}) {
 
     async function GetProfile() {
         try {
+            setLoading(true)
             const {user} = session;
             const {data, error} = await supabase
                 .from("profiles")
@@ -26,27 +28,47 @@ export default function Account({session}) {
         } catch (error) {
             console.warn(error);
         }
+        setLoading(false)
     }
 
-    async function editUsername() {
-
-    }
-
-    async function editName() {
+    async function OpenEditProfile() {
 
     }
 
-    async function editPicture() {
-
+    async function EditProfile(event) {
+        try {
+            event.preventDefault()
+            console.log('hello')
+            setLoading(true)
+            const {user} = session;
+            const updates = {
+                id : user.id,
+                username: username,
+                full_name: name,
+                avatar_url: picture,
+            }
+            console.log("updates:", updates)
+            let { error } = await supabase.from('profiles').upsert(updates)
+            return;
+        } catch (error) {
+            console.warn(error);
+        }
+        setLoading(false)
     }
 
     if (session) {
         return (
             <div>
-                <h3>edit profile</h3>
+                <h3>profile</h3>
                 <p>Name: {name}</p>
                 <p>Username: {username}</p>
                 <p>Picture: {picture}</p>
+                    <form onSubmit={(e) => EditProfile(e)}>
+                        <input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)}/>
+                        <input id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)}/>
+                        <input id="profile picture" type="text" value={picture} onChange={(e) => setPicture(e.target.value)}/>
+                        <button type='submit'>update</button>
+                    </form>
             </div>
         );
     } else {
