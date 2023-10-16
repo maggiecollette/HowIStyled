@@ -5,8 +5,8 @@ export default function Account({session}) {
     if (session) {
         return (
             <div>
-                <EditProfile key={session.user.id} session={session}/>
-                <NewPost key={session.user.id}  session={session}/>
+                <EditProfile session={session}/>
+                <NewPost session={session}/>
             </div>
         );
     } else {

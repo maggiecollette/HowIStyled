@@ -52,9 +52,9 @@ export default function EditProfile({session}) {
                 <p>Username: {username}</p>
                 <p>Picture: {picture}</p>
                 <form onSubmit={(e) => EditProfile(e)}>
-                    <input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)}/>
-                    <input id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)}/>
-                    <input id="profile picture" type="text" value={picture} onChange={(e) => setPicture(e.target.value)}/>
+                    <input id="name" type="text" placeholder={name} onChange={(e) => setName(e.target.value)}/>
+                    <input id="username" type="text" placeholder={username} onChange={(e) => setUsername(e.target.value)}/>
+                    <input id="profile picture" type="text" placeholder={picture} onChange={(e) => setPicture(e.target.value)}/>
                     <button type='submit'>update</button>
                 </form>
             </div>
