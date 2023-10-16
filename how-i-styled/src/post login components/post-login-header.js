@@ -12,7 +12,6 @@ export default function PostLoginHeader() {
 
     return (
         <header>
-            <h1>logged in</h1>
             <Link to="/">HowIStyled</Link>
             <Link to="/">Home</Link>
             <Link to="/account">Account</Link>
