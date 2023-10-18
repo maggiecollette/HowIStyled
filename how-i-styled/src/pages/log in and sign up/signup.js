@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {supabase} from "../supabaseClient";
+import {supabase} from "../../supabaseClient";
 import {useNavigate} from "react-router-dom";
+import {AddPicture} from "../components/AddPicture";
 
 function Signup() {
     const [session, setSession] = useState(null);
@@ -8,7 +9,8 @@ function Signup() {
     const [full_name, setName] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [avatar_url, setAvatarUrl] = useState("");
+    const [picture, setPicture] = useState(null);
+    const [loading, setLoading] = useState(false)
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -30,9 +32,9 @@ function Signup() {
                 password,
                 options: {
                     data: {
-                        full_name,
                         username,
-                        avatar_url
+                        full_name,
+                        picture,
                     }
                 }
             });
@@ -41,6 +43,12 @@ function Signup() {
             console.log(error);
         }
     };
+
+    async function SetUpPicture(event) {
+        setLoading(true)
+        setPicture(await AddPicture(event, 'profile_pictures'))
+        setLoading(false)
+    }
 
     if (!session) {
         return (
@@ -67,11 +75,11 @@ function Signup() {
                     onChange={(e) => setUsername(e.target.value)}
                 />
                 <input
-                    type="text"
-                    placeholder="Profile Picture"
-                    onChange={(e) => setAvatarUrl(e.target.value)}
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => SetUpPicture(e)}
                 />
-                <button onClick={handleSignup}>Sign Up</button>
+                <button disabled={loading} onClick={handleSignup}>{loading ? "loading" : "sign up"}</button>
             </div>
         );
     }

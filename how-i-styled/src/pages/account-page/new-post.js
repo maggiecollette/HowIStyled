@@ -1,5 +1,7 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {supabase} from "../../supabaseClient";
+import {DownloadPicture} from "../components/DownloadPicture";
+import {AddPicture} from "../components/AddPicture";
 
 export default function NewPost({session}) {
     const [caption, setCaption] = useState("")
@@ -7,8 +9,11 @@ export default function NewPost({session}) {
     const [name, setName] = useState("")
     const [brand, setBrand] = useState("")
     const [type, setType] = useState("")
-    const options = ["select an option", "top", "sweater", "sweatshirt", "pants", "shorts", "skirt", "dress", "jacket", "bag", "shoes"]
+    const options = [{id: 0, name: "select an option"}, {id: 1, name: "top"}, {id: 2, name: "sweater"},
+        {id: 3, name: "sweatshirt"}, {id: 4, name: "pants"}, {id: 5, name: "shorts"}, {id: 6, name: "skirt"},
+        {id: 7, name: "dress"}, {id: 8, name: "jacket"}, {id: 9, name: "bag"}, {id: 10, name: "shoes"}]
     const [elements, setElements] = useState([])
+    const [loading, setLoading] = useState(false)
     const {user} = session;
 
     async function NewPost(event) {
@@ -17,7 +22,7 @@ export default function NewPost({session}) {
             const postData = {
                 user_id: user.id,
                 caption: caption,
-                photo_url: photo,
+                photo: photo,
             }
             const {data, error} = await supabase
                 .from("posts")
@@ -71,7 +76,6 @@ export default function NewPost({session}) {
     }
 
     function DeleteElement(event, index) {
-        // fix this
         event.preventDefault()
         console.log("delete elements at", index, "before", elements)
         elements.splice(index, 1)
@@ -79,12 +83,24 @@ export default function NewPost({session}) {
         console.log(elements)
     }
 
+    async function ChangePicture(event) {
+        try {
+            setLoading(true)
+            event.preventDefault()
+            const newPicture = await AddPicture(event, 'photos')
+            setPhoto(newPicture)
+            setLoading(false)
+        } catch (error) {
+            console.log("Error changing picture:",error)
+        }
+    }
+
     return (
         <div>
             <h3>new post</h3>
             <form onSubmit={(e) => NewPost(e)}>
                 <div>
-                    <input id="photo" type="text" placeholder="photo" onChange={(e) => setPhoto(e.target.value)}/>
+                    <input id="photo" type="file" accept="image/*" defaultValue={photo} onChange={(e) => ChangePicture(e)}/>
                 </div>
                 <div>
                     <input id="caption" type="text" placeholder="caption" onChange={(e) => setCaption(e.target.value)}/>
@@ -92,8 +108,8 @@ export default function NewPost({session}) {
                 <div>
                     <select id="type" onChange={(e) => setType(e.target.value)}>
                         {options && options.map((option => (
-                            <option key={options.indexOf(option)} value={option}>
-                                {option}
+                            <option key={option.id} value={option.name}>
+                                {option.name}
                             </option>
                         )))}
                     </select>
@@ -115,7 +131,7 @@ export default function NewPost({session}) {
                     ))}
                 </ul>
                 </div>
-                <button type='submit'>post</button>
+                <button type='submit' disabled={loading}>{loading ? "loading" : "post"}</button>
             </form>
         </div>
     );
