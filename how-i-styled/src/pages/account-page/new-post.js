@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {supabase} from "../../supabaseClient";
 import {DownloadPicture} from "../components/DownloadPicture";
 import {AddPicture} from "../components/AddPicture";
+import {options} from "../components/options";
 
 export default function NewPost({session}) {
     const [caption, setCaption] = useState("")
@@ -9,9 +10,6 @@ export default function NewPost({session}) {
     const [name, setName] = useState("")
     const [brand, setBrand] = useState("")
     const [type, setType] = useState("")
-    const options = [{id: 0, name: "select an option"}, {id: 1, name: "top"}, {id: 2, name: "sweater"},
-        {id: 3, name: "sweatshirt"}, {id: 4, name: "pants"}, {id: 5, name: "shorts"}, {id: 6, name: "skirt"},
-        {id: 7, name: "dress"}, {id: 8, name: "jacket"}, {id: 9, name: "bag"}, {id: 10, name: "shoes"}]
     const [elements, setElements] = useState([])
     const [loading, setLoading] = useState(false)
     const {user} = session;
